@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "Multitasker Alerts",
+  "version": "1.0",
+
+  "description": "This extension triggers an alert when a new ticket arrives on atlassian.net.",
+
+  "icons": {
+    "48": "icons/multitasker-48.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.atlassian.net/*"],
+      "js": ["multitasker.js"]
+    }
+  ]
+}
