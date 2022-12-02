@@ -6,7 +6,7 @@
   "description": "This extension triggers an alert when a new ticket arrives on atlassian.net.",
 
   "icons": {
-    "48": "icons/multitasker-48.png"
+    "48": "icons/multitasker-48.svg"
   },
 
   "content_scripts": [
