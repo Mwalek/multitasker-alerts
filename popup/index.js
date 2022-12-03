@@ -1,10 +1,9 @@
-const age = 26;
-
 /**
  * Listen for clicks on the buttons, and send the appropriate message to
  * the content script in the page.
  */
 function listenForClicks() {
+  console.log("Content script succesfully injected into the active tab.");
   document.addEventListener("click", (e) => {
     console.log(`A click was logged: ${e.target.textContent}.`);
     /**

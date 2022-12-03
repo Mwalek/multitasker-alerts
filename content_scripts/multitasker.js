@@ -4,14 +4,14 @@
   }
   window.hasRun = true;
 
-  setTimeout(() => console.log(age), 5000);
+  console.log("Multitasker launched successfully...");
 
   // Select the node that will be observed for mutations
   const targetNode = document.getElementsByClassName("sc-1g53n8-0")[0];
   let originalNumberOfTickets = document.querySelectorAll(
     '.sc-1g53n8-0 > div[role="presentation"]'
   ).length;
-  console.log(originalNumberOfTickets);
+  console.log(`originalNumberOfTickets = ${originalNumberOfTickets}`);
   var mp3_url =
     "https://media.geeksforgeeks.org/wp-content/uploads/20190531135120/beep.mp3";
   var timer = null;
@@ -79,6 +79,29 @@
   const observer = new MutationObserver(callback);
 
   /**
+   * This function is called to create a new ticket for
+   * the purposes of simulation. It is added after 15s,
+   * stays on the page for 15s, and is deleted thereafter.
+   */
+  function createNewTicket(ticketsContainer) {
+    let div = document.createElement("div");
+    let p = document.createElement("p");
+    let del = document.createElement("del");
+    p.textContent = "I'm a Dummy ";
+    del.textContent = "ticket";
+    p.append(del);
+    div.appendChild(p);
+    div.setAttribute(
+      "style",
+      "background-color: salmon; color: white; width: auto; height: auto; padding:20px;"
+    );
+    div.setAttribute("role", "presentation");
+    ticketsContainer.prepend(div);
+    console.log("Removing the fake ticket in 15 seconds...");
+    setTimeout(() => div.remove(), 15000);
+  }
+
+  /**
    * Listen for messages from the background script.
    * Call "insertBeast()" or "removeExistingBeasts()".
    */
@@ -89,6 +112,11 @@
     } else if (message.command === "stop") {
       console.log("Stopped observing...");
       observer.disconnect();
+    } else if (message.command === "simulate") {
+      console.log("Adding a fake ticket in 15 seconds...");
+      setTimeout(function () {
+        createNewTicket(targetNode);
+      }, 15000);
     }
   });
 })();
