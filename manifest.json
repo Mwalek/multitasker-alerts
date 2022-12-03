@@ -8,17 +8,10 @@
   "icons": {
     "48": "icons/multitasker-48.svg"
   },
-
+  "permissions": ["activeTab"],
   "browser_action": {
     "default_icon": "icons/multitasker-48.svg",
     "default_title": "Multitasker",
     "default_popup": "popup/index.html"
-  },
-
-  "content_scripts": [
-    {
-      "matches": ["*://*.atlassian.net/*"],
-      "js": ["multitasker.js"]
-    }
-  ]
+  }
 }

@@ -1,6 +1,4 @@
-function placeHolder() {
-  console.log("The multitasker script was successfully loaded.");
-}
+console.log("Something random...");
 
 /**
  * There was an error executing the script.
@@ -19,5 +17,5 @@ function reportExecuteScriptError(error) {
  */
 browser.tabs
   .executeScript({ file: "/content_scripts/multitasker.js" })
-  .then(placeHolder)
+  .then()
   .catch(reportExecuteScriptError);
