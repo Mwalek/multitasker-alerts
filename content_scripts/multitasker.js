@@ -12,8 +12,10 @@
     '.sc-1g53n8-0 > div[role="presentation"]'
   ).length;
   console.log(`originalNumberOfTickets = ${originalNumberOfTickets}`);
-  var mp3_url =
-    "https://media.geeksforgeeks.org/wp-content/uploads/20190531135120/beep.mp3";
+  let player = document.createElement("audio");
+  player.src = browser.runtime.getURL("assets/bell-notification.mp3");
+  let mp3_url = browser.runtime.getURL("assets/bell-notification.mp3");
+  console.log(mp3_url);
   var timer = null;
   let userRecentlyScrolled = false;
 
@@ -61,7 +63,20 @@
     if (currentNumberOfTickets.length > originalNumberOfTickets) {
       console.log("The number of tickets has increased.");
       if (scrollStatus() === false) {
-        new Audio(mp3_url).play();
+        let playPromise = player.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then((_) => {
+              console.log("playPromise is not undefined...");
+              // Automatic playback started!
+              // Show playing UI.
+            })
+            .catch((error) => {
+              console.log(`Multitasker Error: ${error}`);
+              // Auto-play was prevented
+              // Show paused UI.
+            });
+        }
         alert("The number of tickets has increased.");
       }
     }
