@@ -6,8 +6,43 @@
 
   console.log("Multitasker launched successfully...");
 
+  /**
+   * Determine (guess) the class of the ticket container
+   */
+
+  let parents = [];
+  let matchList = document.querySelectorAll("div[role='presentation']");
+
+  matchList.forEach(function (match) {
+    let nextSibling = match.nextElementSibling;
+    if (nextSibling) {
+      if (nextSibling.getAttribute("role") === "presentation") {
+        parents.push(match.parentElement.className);
+      }
+    }
+  });
+  console.log(parents);
+
+  function getMostFrequent(arr) {
+    const hashmap = arr.reduce((acc, val) => {
+      acc[val] = (acc[val] || 0) + 1;
+      return acc;
+    }, {});
+    return Object.keys(hashmap).reduce((a, b) =>
+      hashmap[a] > hashmap[b] ? a : b
+    );
+  }
+
+  const mostFrequentContainer = getMostFrequent(parents);
+
+  console.log(mostFrequentContainer);
+
+  let ticketContainerClasses = mostFrequentContainer.split(" ");
+
   // Select the node that will be observed for mutations
-  const targetNode = document.getElementsByClassName("sc-1g53n8-0")[0];
+  const targetNode = document.getElementsByClassName(
+    ticketContainerClasses[0]
+  )[0];
   let originalNumberOfTickets = document.querySelectorAll(
     '.sc-1g53n8-0 > div[role="presentation"]'
   ).length;
