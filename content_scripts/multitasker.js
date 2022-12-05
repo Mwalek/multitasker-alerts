@@ -38,14 +38,15 @@
   console.log(mostFrequentContainer);
 
   let ticketContainerClasses = mostFrequentContainer.split(" ");
+  const individualTicket = `.${ticketContainerClasses[0]} > div[role="presentation"]`;
+  console.log(individualTicket);
 
   // Select the node that will be observed for mutations
   const targetNode = document.getElementsByClassName(
     ticketContainerClasses[0]
   )[0];
-  let originalNumberOfTickets = document.querySelectorAll(
-    '.sc-1g53n8-0 > div[role="presentation"]'
-  ).length;
+  let originalNumberOfTickets =
+    document.querySelectorAll(individualTicket).length;
   console.log(`originalNumberOfTickets = ${originalNumberOfTickets}`);
   let player = document.createElement("audio");
   player.src = browser.runtime.getURL("assets/bell-notification.mp3");
@@ -89,10 +90,7 @@
 
   // Callback function to execute when mutations are observed
   const callback = (mutationList, observer) => {
-    let currentNumberOfTickets = document.querySelectorAll(
-      '.sc-1g53n8-0 > div[role="presentation"]'
-    );
-
+    let currentNumberOfTickets = document.querySelectorAll(individualTicket);
     console.log(currentNumberOfTickets.length);
     console.log("originalNumberOfTickets = " + originalNumberOfTickets);
     if (currentNumberOfTickets.length > originalNumberOfTickets) {
