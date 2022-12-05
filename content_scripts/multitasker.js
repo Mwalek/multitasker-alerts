@@ -57,10 +57,10 @@
 
   function scrollStatus() {
     if (userRecentlyScrolled) {
-      targetNode.style.backgroundColor = "aliceblue";
+      targetNode.style.backgroundColor = "#f0f8ff";
       return true;
     } else if (!userRecentlyScrolled) {
-      targetNode.style.backgroundColor = "yellowgreen";
+      targetNode.style.backgroundColor = "#f2ffd8";
       return false;
     }
   }
