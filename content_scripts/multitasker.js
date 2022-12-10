@@ -1,4 +1,5 @@
 (() => {
+  console.log("Multitakser triggered.");
   if (window.hasRun) {
     return;
   }
@@ -147,6 +148,7 @@
     ticketsContainer.prepend(div);
     console.log("Removing the fake ticket in 15 seconds...");
     setTimeout(() => div.remove(), 15000);
+    console.log("Removed the fake ticket...");
   }
 
   /**
@@ -161,13 +163,20 @@
       console.log("Stopped observing...");
       observer.disconnect();
     } else if (message.command === "simulate") {
-      console.log("Adding a fake ticket in 15 seconds...");
+      console.log("Adding a fake ticket in 1 minute...");
       setTimeout(function () {
         createNewTicket(targetNode);
-      }, 15000);
+      }, 60000);
     }
   });
-})();
 
-// Start observing the target node for configured mutations
-// observer.observe(targetNode, config);
+  // const myTimeout = setTimeout(myGreeting, 30000);
+
+  // function myGreeting() {
+  //   const myObject = Object.defineProperty(document, "visibilityState", {
+  //     value: "visible",
+  //     writable: true,
+  //   });
+  //   console.log(myObject);
+  // }
+})();
