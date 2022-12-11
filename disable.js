@@ -13,11 +13,3 @@ document.addEventListener('visibilitychange', () => {
     Object.defineProperty(document, 'hidden', { value: false, writable: true });
   });`;
 (document.head || document.documentElement).appendChild(s);
-
-function manipulatePageVisibility() {
-  Object.defineProperty(document, "visibilityState", {
-    value: "visible",
-    writable: true,
-  });
-  Object.defineProperty(document, "hidden", { value: false, writable: true });
-}
