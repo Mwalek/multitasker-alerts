@@ -163,37 +163,10 @@
       console.log("Stopped observing...");
       observer.disconnect();
     } else if (message.command === "simulate") {
-      console.log("Adding a fake ticket in 1 minute...");
+      console.log("Adding a fake ticket in 15 seconds...");
       setTimeout(function () {
         createNewTicket(targetNode);
-      }, 60000);
-    } else if (message.command === "networkChange") {
-      console.log("Network changed...");
+      }, 15000);
     }
   });
-
-  console.log("foo");
-
-  // window.addEventListener("visibilityChange", function () {
-  //   console.log("Visibility changed still");
-  //   Object.defineProperty(document, "visibilityState", {
-  //     value: "visible",
-  //     writable: true,
-  //   });
-  //   console.log(document);
-  // });
-
-  function yourFunction() {
-    // do whatever you like here
-    console.log("60 second Interval...");
-    Object.defineProperty(document, "visibilityState", {
-      value: "visible",
-      writable: true,
-    });
-    console.log(document);
-
-    setTimeout(yourFunction, 60000);
-  }
-
-  yourFunction();
 })();
