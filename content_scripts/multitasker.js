@@ -167,16 +167,33 @@
       setTimeout(function () {
         createNewTicket(targetNode);
       }, 60000);
+    } else if (message.command === "networkChange") {
+      console.log("Network changed...");
     }
   });
 
-  // const myTimeout = setTimeout(myGreeting, 30000);
+  console.log("foo");
 
-  // function myGreeting() {
-  //   const myObject = Object.defineProperty(document, "visibilityState", {
+  // window.addEventListener("visibilityChange", function () {
+  //   console.log("Visibility changed still");
+  //   Object.defineProperty(document, "visibilityState", {
   //     value: "visible",
   //     writable: true,
   //   });
-  //   console.log(myObject);
-  // }
+  //   console.log(document);
+  // });
+
+  function yourFunction() {
+    // do whatever you like here
+    console.log("60 second Interval...");
+    Object.defineProperty(document, "visibilityState", {
+      value: "visible",
+      writable: true,
+    });
+    console.log(document);
+
+    setTimeout(yourFunction, 60000);
+  }
+
+  yourFunction();
 })();
