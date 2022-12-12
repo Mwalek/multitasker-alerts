@@ -99,17 +99,10 @@
       if (scrollStatus() === false) {
         let playPromise = player.play();
         if (playPromise !== undefined) {
-          playPromise
-            .then((_) => {
-              console.log("playPromise is not undefined...");
-              // Automatic playback started!
-              // Show playing UI.
-            })
-            .catch((error) => {
-              console.log(`Multitasker Error: ${error}`);
-              // Auto-play was prevented
-              // Show paused UI.
-            });
+          playPromise.catch((error) => {
+            // Auto-play was prevented
+            console.log(`Multitasker Error: ${error}`);
+          });
         }
         alert("The number of tickets has increased.");
       }
