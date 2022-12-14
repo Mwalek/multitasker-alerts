@@ -1,9 +1,27 @@
 (() => {
   console.log("Multitakser triggered.");
-  if (window.hasRun) {
-    return;
-  }
   window.hasRun = true;
+  let observingStatus = "";
+
+  // if (window.hasRun) {
+  //   return;
+  // }
+
+  browser.runtime.onMessage.addListener(retrieveObserverMessage);
+
+  function retrieveObserverMessage(data) {
+    console.log(
+      `Retrieved the following data from network.js: ${data.message}`
+    );
+    observingStatus = data.message;
+    if (observingStatus) {
+      observer.observe(targetNode, config);
+    } else {
+      observer.disconnect();
+    }
+  }
+
+  const foo = "Just a foo";
 
   console.log("Multitasker launched successfully...");
 
@@ -22,7 +40,7 @@
       }
     }
   });
-  console.log(parents);
+  // console.log(parents);
 
   function getMostFrequent(arr) {
     const hashmap = arr.reduce((acc, val) => {
@@ -36,11 +54,11 @@
 
   const mostFrequentContainer = getMostFrequent(parents);
 
-  console.log(mostFrequentContainer);
+  // console.log(mostFrequentContainer);
 
   let ticketContainerClasses = mostFrequentContainer.split(" ");
   const individualTicket = `.${ticketContainerClasses[0]} > div[role="presentation"]`;
-  console.log(individualTicket);
+  // console.log(individualTicket);
 
   // Select the node that will be observed for mutations
   const targetNode = document.getElementsByClassName(
@@ -151,15 +169,25 @@
   browser.runtime.onMessage.addListener((message) => {
     if (message.command === "start") {
       console.log("Started observing...");
-      observer.observe(targetNode, config);
+      observingStatus = true;
+      if (observer) {
+        observer.observe(targetNode, config);
+      }
+      // notifyBackgroundPage(observingStatus);
+      console.log(`Inside start command: ${observingStatus}.`);
     } else if (message.command === "stop") {
       console.log("Stopped observing...");
-      observer.disconnect();
+      observingStatus = false;
+      if (observer) {
+        observer.disconnect();
+      }
+      // notifyBackgroundPage(observingStatus);
     } else if (message.command === "simulate") {
       console.log("Adding a fake ticket in 15 seconds...");
       setTimeout(function () {
         createNewTicket(targetNode);
       }, 15000);
+      // notifyBackgroundPage(observingStatus);
     }
   });
 })();
