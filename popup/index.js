@@ -10,7 +10,10 @@ function observerStatusChecker() {
   }
 }
 function onSuccess(message) {
-  console.log(message.response);
+  /**
+   * Uncomment the following line when debugging:
+   * console.log(message.response);
+   **/
   obsStatus = message.response;
   observerStatusChecker();
 }
@@ -42,8 +45,6 @@ observerStatusChecker();
  * the content script in the page.
  */
 function listenForClicks() {
-  console.log(obsStatus);
-
   if (obsStatus) {
     controller.name = "stop";
     controller.textContent = "Stop";
@@ -51,7 +52,6 @@ function listenForClicks() {
     controller.name = "start";
     controller.textContent = "Start";
   }
-  console.log("Content script succesfully injected into the active tab.");
   document.addEventListener("click", (e) => {
     console.log(`A click was logged: ${e.target.textContent}.`);
     /**

@@ -31,13 +31,16 @@ browser.webRequest.onBeforeRequest.addListener(
 browser.runtime.onMessage.addListener(notify);
 
 function notify(request, sender, sendResponse) {
-  console.log(request.message);
   if (firstRun === "") {
     firstRun = false;
     observingStatus = request.message;
     console.log("This was the first run...");
     sendResponse({ response: observingStatus });
   } else if (firstRun === false) {
+    /**
+     * This IF block only fires when the observingStatus
+     * has changed at least once.
+     */
     if (request.firstrun === false) {
       console.log("This was NOT the first run...");
       if (observingStatus !== request.message) {
@@ -66,7 +69,10 @@ function sendMultitasker(tabs) {
 }
 
 function success(response) {
-  console.log("Multitasker.js received the message.");
+  /**
+   * Uncomment this line when debugging:
+   * console.log("Multitasker.js received the message.");
+   **/
 }
 
 function error(error) {

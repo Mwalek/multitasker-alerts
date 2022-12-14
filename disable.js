@@ -9,7 +9,7 @@ document.addEventListener('visibilitychange', () => {
    * Uncomment this line to debug whether the
    * Page Visibility API is being spoofed.
    * console.log('Document.hidden = "${document.hidden}".');
-   * /
+   **/
     Object.defineProperty(document, 'visibilityState', {
         value: 'visible',
         writable: true,
