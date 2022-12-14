@@ -7,7 +7,11 @@ s.textContent = `
  * Monitors changes to the page visibility.
  */
 document.addEventListener('visibilitychange', () => {
-    console.log('Document.hidden = "${document.hidden}".');
+  /**
+   * Uncomment this line to debug whether the
+   * Page Visibility API is being spoofed.
+   * console.log('Document.hidden = "${document.hidden}".');
+   * /
     Object.defineProperty(document, 'visibilityState', {
         value: 'visible',
         writable: true,
