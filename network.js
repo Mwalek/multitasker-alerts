@@ -28,10 +28,6 @@ browser.webRequest.onBeforeRequest.addListener(
   reqFilter //  object
 );
 
-browser.browserAction.onClicked.addListener((tab) => {
-  console.log(`A click was logged.`);
-});
-
 browser.runtime.onMessage.addListener(notify);
 
 function notify(request, sender, sendResponse) {
@@ -76,27 +72,3 @@ function success(response) {
 function error(error) {
   console.log(error);
 }
-
-// function handleResponse(message) {
-//   console.log(`Message from the background script: ${message.response}`);
-// }
-
-// function handleError(error) {
-//   console.log(`Error: ${error}`);
-// }
-
-// function notifyBackgroundPage(observingStatus, e) {
-//   const sending = browser.runtime.sendMessage({
-//     greeting: "Greeting from the content script",
-//     status: observingStatus,
-//   });
-//   sending.then(handleResponse, handleError);
-// }
-
-// background-script.js
-// function handleMessage(request, sender, sendResponse) {
-//   console.log(`A content script sent a message: ${request.greeting}`);
-//   sendResponse({ response: "Response from background script" });
-// }
-
-// browser.runtime.onMessage.addListener(handleMessage);
