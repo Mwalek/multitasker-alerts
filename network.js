@@ -41,17 +41,6 @@ function notify(request, sender, sendResponse) {
     observingStatus = request.message;
     console.log("This was the first run...");
     sendResponse({ response: observingStatus });
-    /**
-     * If multitasker.js is running for the first time,
-     * wait a second before sending the message.
-     * NB: It may not be required to send a message at all.
-     */
-    setTimeout(() => {
-      browser.tabs
-        .query({ active: true, currentWindow: true })
-        .then(sendMultitasker)
-        .catch(reportAnError);
-    }, 1000);
   } else if (firstRun === false) {
     if (request.firstrun === false) {
       console.log("This was NOT the first run...");
