@@ -1,5 +1,3 @@
-console.log("Disable.js triggered.");
-
 var s = document.createElement("script");
 s.setAttribute("id", "multitaskerHelper");
 s.textContent = `

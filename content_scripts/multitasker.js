@@ -1,5 +1,4 @@
 (() => {
-  console.log("Multitakser triggered.");
   window.hasRun = true;
   let observingStatus = "";
 
@@ -20,10 +19,6 @@
       observer.disconnect();
     }
   }
-
-  const foo = "Just a foo";
-
-  console.log("Multitasker launched successfully...");
 
   /**
    * Determine (guess) the class of the ticket container
@@ -68,9 +63,8 @@
     document.querySelectorAll(individualTicket).length;
   console.log(`originalNumberOfTickets = ${originalNumberOfTickets}`);
   let player = document.createElement("audio");
-  player.src = browser.runtime.getURL("assets/bell-notification.mp3");
   let mp3_url = browser.runtime.getURL("assets/bell-notification.mp3");
-  console.log(mp3_url);
+  player.src = mp3_url;
   var timer = null;
   let userRecentlyScrolled = false;
 
