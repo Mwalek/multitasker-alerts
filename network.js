@@ -40,7 +40,18 @@ function notify(request, sender, sendResponse) {
     firstRun = false;
     observingStatus = request.message;
     console.log("This was the first run...");
-    // notifyBackgroundPage();
+    sendResponse({ response: observingStatus });
+    /**
+     * If multitasker.js is running for the first time,
+     * wait a second before sending the message.
+     * NB: It may not be required to send a message at all.
+     */
+    setTimeout(() => {
+      browser.tabs
+        .query({ active: true, currentWindow: true })
+        .then(sendMultitasker)
+        .catch(reportAnError);
+    }, 1000);
   } else if (firstRun === false) {
     if (request.firstrun === false) {
       console.log("This was NOT the first run...");
@@ -48,13 +59,12 @@ function notify(request, sender, sendResponse) {
         observingStatus = request.message;
       }
     }
+    sendResponse({ response: observingStatus });
+    browser.tabs
+      .query({ active: true, currentWindow: true })
+      .then(sendMultitasker)
+      .catch(reportAnError);
   }
-  sendResponse({ response: observingStatus });
-  // send message to multitasker.js
-  browser.tabs
-    .query({ active: true, currentWindow: true })
-    .then(sendMultitasker)
-    .catch(reportAnError);
 }
 
 function reportAnError(error) {
@@ -62,14 +72,12 @@ function reportAnError(error) {
 }
 
 function sendMultitasker(tabs) {
-  setTimeout(function () {
-    browser.tabs
-      .sendMessage(tabs[0].id, {
-        message: observingStatus,
-      })
-      .then(success)
-      .catch(error);
-  }, 1000);
+  browser.tabs
+    .sendMessage(tabs[0].id, {
+      message: observingStatus,
+    })
+    .then(success)
+    .catch(error);
 }
 
 function success(response) {
