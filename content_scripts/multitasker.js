@@ -75,15 +75,11 @@
         setTimeout(() => {
           targetNode.classList.remove("scrolling");
         }, 10000);
+      } else {
+        targetNode.classList.remove("scrolling");
       }
       return true;
     } else if (!userRecentlyScrolled) {
-      if (observingStatus) {
-        targetNode.classList.add("not-scrolling");
-        setTimeout(() => {
-          targetNode.classList.remove("not-scrolling");
-        }, 10000);
-      }
       return false;
     }
   }
@@ -180,6 +176,7 @@
     } else if (message.command === "stop") {
       console.log("Stopped observing...");
       observingStatus = false;
+      scrollStatus();
       if (observer) {
         observer.disconnect();
       }
