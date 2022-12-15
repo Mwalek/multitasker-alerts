@@ -70,10 +70,20 @@
 
   function scrollStatus() {
     if (userRecentlyScrolled) {
-      targetNode.style.backgroundColor = "#f0f8ff";
+      if (observingStatus) {
+        targetNode.classList.add("scrolling");
+        setTimeout(() => {
+          targetNode.classList.remove("scrolling");
+        }, 10000);
+      }
       return true;
     } else if (!userRecentlyScrolled) {
-      targetNode.style.backgroundColor = "#f2ffd8";
+      if (observingStatus) {
+        targetNode.classList.add("not-scrolling");
+        setTimeout(() => {
+          targetNode.classList.remove("not-scrolling");
+        }, 10000);
+      }
       return false;
     }
   }
@@ -84,12 +94,10 @@
       if (timer !== null) {
         clearTimeout(timer);
       }
-      // targetNode.style.backgroundColor = "green";
       userRecentlyScrolled = true;
       console.log("User scrolling detected...");
       scrollStatus();
       timer = setTimeout(function () {
-        //   targetNode.style.backgroundColor = "yellow";
         userRecentlyScrolled = false;
         scrollStatus();
         console.log("User has not scrolled in the recent past.");

@@ -3,7 +3,6 @@ console.log("Network.js started...");
 if (typeof observingStatus === "undefined") {
   let observingStatus = false;
   console.log(`Current observingStatus: ${observingStatus}.`);
-  // notifyBackgroundPage();
 }
 
 let firstRun = "";
