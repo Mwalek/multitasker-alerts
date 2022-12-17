@@ -6,6 +6,9 @@ if (typeof observingStatus === "undefined") {
 }
 
 let firstRun = "";
+let workingTab = 0;
+let currentTab;
+let hasWorkingTab;
 
 /**
  * This event is triggered when a request is about to be made, and before headers are available.
@@ -30,27 +33,51 @@ browser.webRequest.onBeforeRequest.addListener(
 browser.runtime.onMessage.addListener(notify);
 
 function notify(request, sender, sendResponse) {
+  let responseObj = {};
+
   if (firstRun === "") {
     firstRun = false;
     observingStatus = request.message;
     console.log("This was the first run...");
-    sendResponse({ response: observingStatus });
+    handlePopupMessage(request);
+    sendResponse({
+      result: "Network.js received the message..",
+      hasWorkingTab,
+      response: observingStatus,
+      workingTab: workingTab,
+      currentTab: currentTab,
+    });
   } else if (firstRun === false) {
-    /**
-     * This IF block only fires when the observingStatus
-     * has changed at least once.
-     */
     if (request.firstrun === false) {
       console.log("This was NOT the first run...");
       if (observingStatus !== request.message) {
         observingStatus = request.message;
       }
     }
-    sendResponse({ response: observingStatus });
     browser.tabs
       .query({ active: true, currentWindow: true })
       .then(sendMultitasker)
       .catch(reportAnError);
+    handlePopupMessage(request);
+
+    if (request.name === "starterUpper" || "stopperDowner") {
+      handlePopupMessage(request);
+      sendResponse({
+        results: "Network.js received the message..",
+        hasWorkingTab,
+        response: observingStatus,
+        workingTab,
+        currentTab,
+      });
+    } else {
+      sendResponse({
+        results: "Network.js received the message..",
+        hasWorkingTab,
+        response: observingStatus,
+        workingTab,
+        currentTab,
+      });
+    }
   }
 }
 
@@ -76,4 +103,30 @@ function success(response) {
 
 function error(error) {
   console.log(error);
+}
+
+function foo() {
+  console.log("I'm defined in background.js");
+}
+
+/**
+ * Save the ID of the tab where the start button was clicked.
+ */
+
+function handlePopupMessage(request) {
+  console.log(`working tab is ${workingTab}`);
+  if (workingTab === 0) {
+    workingTab = request.tab_id;
+    hasWorkingTab = true;
+    console.log(`working tab is ${workingTab}`);
+  } else if (workingTab > 0) {
+    currentTab = request.tab_id;
+    hasWorkingTab = false;
+    console.log(`working tab is ${currentTab}`);
+  }
+  if (request.initiator === "stop") {
+    workingTab = 0;
+    hasWorkingTab = false;
+  }
+  console.log(`Index.js sent a message: ${request.tab_id}`);
 }

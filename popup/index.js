@@ -1,5 +1,8 @@
 const controller = document.getElementById("controller");
 let obsStatus = false;
+let workingTab;
+let currentTab;
+let theCurrentTab;
 function observerStatusChecker() {
   if (obsStatus) {
     controller.name = "stop";
@@ -14,7 +17,17 @@ function onSuccess(message) {
    * Uncomment the following line when debugging:
    * console.log(message.response);
    **/
+  console.log(JSON.stringify(message));
   obsStatus = message.response;
+  workingTab = message.workingTab;
+  if (message.currentTab) {
+    currentTab = message.currentTab;
+    if (workingTab !== currentTab) {
+      document.querySelector("#popup-content").classList.add("hidden");
+      document.querySelector("#error-content").classList.remove("hidden");
+    }
+  }
+
   observerStatusChecker();
 }
 function onFailure(error) {
@@ -22,15 +35,28 @@ function onFailure(error) {
   observerStatusChecker();
 }
 
-function sendPopupStatus(firstRun = false) {
+browser.tabs
+  .query({ active: true, url: "*://*.atlassian.net/*" })
+  .then(launcher, onError);
+
+function sendPopupStatus(firstRun = false, currentTab = "") {
   let sending = browser.runtime.sendMessage({
     message: obsStatus,
     firstrun: firstRun,
+    tab_id: currentTab,
   });
   sending.then(onSuccess, onFailure);
 }
 
-sendPopupStatus(true);
+function launcher(tabs) {
+  if (isIterable(tabs)) {
+    for (const tab of tabs) {
+      // tab.url requires the `tabs` permission or a matching host permission.
+      currentTab = tab.id;
+    }
+    sendPopupStatus(true, currentTab);
+  }
+}
 
 // console.log(window.wrappedJSObject.foo);
 
@@ -117,7 +143,7 @@ function listenForClicks() {
      * Just log the error to the console.
      */
     function reportError(error) {
-      console.error(`Could not beastify: ${error}`);
+      console.error(`Multitasker Error (logged after click): ${error}`);
     }
 
     /**
@@ -134,11 +160,17 @@ function listenForClicks() {
         .query({ active: true, currentWindow: true })
         .then(observing)
         .catch(reportError);
+      browser.tabs
+        .query({ active: true, url: "*://*.atlassian.net/*" })
+        .then(starterUpper, onError);
     } else if (e.target.name === "stop") {
       browser.tabs
         .query({ active: true, currentWindow: true })
         .then(stopping)
         .catch(reportError);
+      browser.tabs
+        .query({ active: true, url: "*://*.atlassian.net/*" })
+        .then(stopperDowner, onError);
     } else {
       browser.tabs
         .query({ active: true, currentWindow: true })
@@ -178,3 +210,67 @@ browser.tabs
   .executeScript({ file: "/content_scripts/multitasker.js" })
   .then(listenForClicks)
   .catch(reportExecuteScriptError);
+
+function onGot(page) {
+  page.foo();
+}
+
+function onError(error) {
+  console.log(`Error: ${error}`);
+}
+
+let getting = browser.runtime.getBackgroundPage();
+getting.then(onGot, onError);
+
+function logTabs(tabs) {
+  for (const tab of tabs) {
+    // tab.url requires the `tabs` permission or a matching host permission.
+    console.log(tab.id);
+  }
+}
+
+function onError(error) {
+  console.error(`Error: ${error}`);
+}
+
+browser.tabs
+  .query({ active: true, url: "*://*.atlassian.net/*" })
+  .then(logTabs, onError);
+
+function handleResponseA(message) {
+  console.log(`hasWorkingTab: ${message.hasWorkingTab}`);
+}
+
+function notifyBackgroundScript(tabs, name, initiator) {
+  if (isIterable(tabs)) {
+    for (const tab of tabs) {
+      // tab.url requires the `tabs` permission or a matching host permission.
+      console.log(tab.id);
+      const sending = browser.runtime.sendMessage({
+        tab_id: tab.id,
+        name,
+        initiator: initiator,
+      });
+      sending.then(handleResponseA, onFailure);
+    }
+  }
+}
+
+function starterUpper(tabs) {
+  notifyBackgroundScript(tabs, "starterUpper", "start");
+}
+
+function stopperDowner(tabs) {
+  notifyBackgroundScript(tabs, "stopperDowner", "stop");
+}
+
+/**
+ * Check if an object is iterable, before attempting to loop through
+ */
+function isIterable(obj) {
+  // checks for null and undefined
+  if (obj == null) {
+    return false;
+  }
+  return typeof obj[Symbol.iterator] === "function";
+}

@@ -1,10 +1,10 @@
 (() => {
+  if (window.hasRun) {
+    return;
+  }
   window.hasRun = true;
   let observingStatus = "";
-
-  // if (window.hasRun) {
-  //   return;
-  // }
+  let hasWorkingTab = "";
 
   browser.runtime.onMessage.addListener(retrieveObserverMessage);
 
@@ -12,6 +12,10 @@
     console.log(
       `Retrieved the following data from network.js: ${data.message}`
     );
+    /**
+     * Check if hasWorkingTab is TRUE
+     */
+    data.hasWorkingTab = hasWorkingTab;
     observingStatus = data.message;
     if (observingStatus) {
       observer.observe(targetNode, config);
@@ -19,6 +23,10 @@
       observer.disconnect();
     }
   }
+
+  // if (hasWorkingTab) {
+  //   return;
+  // }
 
   /**
    * Determine (guess) the class of the ticket container
