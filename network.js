@@ -115,18 +115,18 @@ function foo() {
 
 function handlePopupMessage(request) {
   console.log(`working tab is ${workingTab}`);
-  if (workingTab === 0) {
+  if (workingTab === 0 && request.initiator === "start") {
     workingTab = request.tab_id;
     hasWorkingTab = true;
     console.log(`working tab is ${workingTab}`);
   } else if (workingTab > 0) {
     currentTab = request.tab_id;
-    hasWorkingTab = false;
-    console.log(`working tab is ${currentTab}`);
+    console.log(`current tab is ${currentTab}`);
   }
   if (request.initiator === "stop") {
     workingTab = 0;
     hasWorkingTab = false;
+    console.log("The initiator was 'stop'");
   }
   console.log(`Index.js sent a message: ${request.tab_id}`);
 }

@@ -3,6 +3,27 @@ let obsStatus = false;
 let workingTab;
 let currentTab;
 let theCurrentTab;
+let workingTabExists;
+const x = document.getElementsByTagName("BODY")[0];
+let preloader = document.createElement("div");
+
+browser.tabs
+  .query({ active: true, url: "*://*.atlassian.net/*" })
+  .then(launcher, unsupportedSite);
+
+function preloaderSetup() {
+  preloader.textContent = "Loading ...";
+  preloader.setAttribute(
+    "style",
+    "background-color: salmon; color: white; text-align: center; padding:20px;"
+  );
+  x.prepend(preloader);
+}
+
+preloaderSetup();
+window.addEventListener("load", function () {
+  preloaderSetup();
+});
 function observerStatusChecker() {
   if (obsStatus) {
     controller.name = "stop";
@@ -12,20 +33,46 @@ function observerStatusChecker() {
     controller.textContent = "Start";
   }
 }
+
+function removePreLoader() {
+  preloader.remove();
+}
 function onSuccess(message) {
   /**
    * Uncomment the following line when debugging:
    * console.log(message.response);
    **/
+  removePreLoader();
   console.log(JSON.stringify(message));
   obsStatus = message.response;
   workingTab = message.workingTab;
-  if (message.currentTab) {
-    currentTab = message.currentTab;
-    if (workingTab !== currentTab) {
-      document.querySelector("#popup-content").classList.add("hidden");
-      document.querySelector("#error-content").classList.remove("hidden");
+  /*
+   * Get all tabs with supported URLs in order to later determine
+   * whether the workingTab still exists
+   */
+  browser.tabs
+    .query({ url: "*://*.atlassian.net/*" })
+    .then(retrievedSupportedTabs, errorRetrievingSupportedTabs);
+  function retrievedSupportedTabs(tabs) {
+    console.log(tabs);
+    workingTabExists = tabs.find((item) => item.id === workingTab);
+    console.log(`Working tab: ${workingTab}`);
+    if (message.currentTab) {
+      currentTab = message.currentTab;
+      if (!message.hasWorkingTab && workingTab !== currentTab) {
+        console.log("There is no working tab.");
+      } else if (message.hasWorkingTab && !workingTabExists) {
+        console.log("There was a working tab, but it doesn't exist anymore.");
+        stopper(tabs);
+        stopperDowner(tabs);
+      } else if (workingTab !== currentTab) {
+        document.querySelector("#popup-content").classList.add("hidden");
+        document.querySelector("#error-content").classList.remove("hidden");
+      }
     }
+  }
+  function errorRetrievingSupportedTabs(e) {
+    console.log(e);
   }
 
   observerStatusChecker();
@@ -34,10 +81,6 @@ function onFailure(error) {
   console.log(error);
   observerStatusChecker();
 }
-
-browser.tabs
-  .query({ active: true, url: "*://*.atlassian.net/*" })
-  .then(launcher, onError);
 
 function sendPopupStatus(firstRun = false, currentTab = "") {
   let sending = browser.runtime.sendMessage({
@@ -49,9 +92,20 @@ function sendPopupStatus(firstRun = false, currentTab = "") {
 }
 
 function launcher(tabs) {
+  if (tabs.length === 0) {
+    console.log(
+      `The tabs array has a length of 0: This means the current URL is not supported.`
+    );
+    document.querySelector("#popup-content").classList.add("hidden");
+    document.querySelector("#error-content").classList.remove("hidden");
+  } else {
+    console.log(`The tabs array has a length not equal to 0.`);
+  }
   if (isIterable(tabs)) {
+    console.log(tabs);
     for (const tab of tabs) {
       // tab.url requires the `tabs` permission or a matching host permission.
+      console.log(tab.url);
       currentTab = tab.id;
     }
     sendPopupStatus(true, currentTab);
@@ -219,6 +273,10 @@ function onError(error) {
   console.log(`Error: ${error}`);
 }
 
+function unsupportedSite() {
+  console.log(`Unsupported website: ${error}`);
+}
+
 let getting = browser.runtime.getBackgroundPage();
 getting.then(onGot, onError);
 
@@ -242,6 +300,7 @@ function handleResponseA(message) {
 }
 
 function notifyBackgroundScript(tabs, name, initiator) {
+  console.log(`notifyBackgroundScript: ${tabs}`);
   if (isIterable(tabs)) {
     for (const tab of tabs) {
       // tab.url requires the `tabs` permission or a matching host permission.
@@ -273,4 +332,16 @@ function isIterable(obj) {
     return false;
   }
   return typeof obj[Symbol.iterator] === "function";
+}
+
+function stopper(tabs) {
+  obsStatus = false;
+  sendPopupStatus();
+
+  let command = "stop";
+  browser.tabs.sendMessage(tabs[0].id, {
+    command,
+  });
+  controller.name = "start";
+  controller.textContent = "Start";
 }
