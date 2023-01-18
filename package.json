@@ -1,0 +1,22 @@
+{
+  "name": "multitasker-alerts",
+  "version": "1.0.0",
+  "description": "This extension triggers an alert when a new ticket arrives on atlassian.net.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mwalek/multitasker-alerts.git"
+  },
+  "author": "Mwale Kalenga",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Mwalek/multitasker-alerts/issues"
+  },
+  "homepage": "https://github.com/Mwalek/multitasker-alerts#readme",
+  "devDependencies": {
+    "eslint": "^8.32.0"
+  }
+}
