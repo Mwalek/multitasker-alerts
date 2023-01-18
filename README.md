@@ -1,6 +1,6 @@
 # Multitasker Alerts
 
-This extension triggers an alert when a new ticket arrives on atlassian.net.
+This extension triggers an alert when a new ticket arrives on Jira Service Management.
 
 ## Credits
 
