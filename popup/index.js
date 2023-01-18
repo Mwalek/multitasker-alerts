@@ -72,7 +72,7 @@ function onSuccess(message) {
     }
   }
   function errorRetrievingSupportedTabs(e) {
-    console.log(e);
+    console.log(`Error retreiving supported tabs: ${e}.`);
   }
 
   observerStatusChecker();
