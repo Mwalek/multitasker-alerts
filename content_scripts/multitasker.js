@@ -169,8 +169,8 @@
   }
 
   /**
-   * Listen for messages from the background script.
-   * Call "insertBeast()" or "removeExistingBeasts()".
+   * Listen for messages from index.js.
+   * Start or disconnect the observer based on the command received.
    */
   browser.runtime.onMessage.addListener((message) => {
     if (message.command === "start") {

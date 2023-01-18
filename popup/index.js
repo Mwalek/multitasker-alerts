@@ -135,7 +135,7 @@ function listenForClicks() {
   document.addEventListener("click", (e) => {
     console.log(`A click was logged: ${e.target.textContent}.`);
     /**
-     * Given the name of a beast, get the URL to the corresponding image.
+     * Given the name of a button that was clicked, send a corresponding command/message.
      */
     function standardiseInput(actionName) {
       switch (actionName) {
@@ -151,9 +151,8 @@ function listenForClicks() {
     }
 
     /**
-     * Insert the page-hiding CSS into the active tab,
-     * then get the beast URL and
-     * send a "beastify" message to the content script in the active tab.
+     * Change the observing state to true and notify
+     * the popup and background script of the change.
      */
     function observing(tabs) {
       obsStatus = true;
@@ -202,7 +201,8 @@ function listenForClicks() {
 
     /**
      * Get the active tab,
-     * then call "beastify()" or "reset()" as appropriate.
+     * then call the appropriate function based on the buton
+     * that was clicked.
      */
     if (e.target.type === "reset") {
       browser.tabs
